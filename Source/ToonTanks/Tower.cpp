@@ -17,10 +17,7 @@ ATower::ATower()
 
 void ATower::Tick(float DeltaSeconds)
 {
-	Super::Tick(DeltaSeconds);
-	
-	// find distance to the tank
-	TowerLocation = GetOwner()->GetActorLocation();
+	Super::Tick(DeltaSeconds);	
 
 	if(bAlive)
 	{
@@ -35,6 +32,8 @@ void ATower::Tick(float DeltaSeconds)
 void ATower::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	TowerLocation = GetOwner()->GetActorLocation();
 	
 	Tank = Cast<ATank>(UGameplayStatics::GetPlayerPawn(this, 0));
 
