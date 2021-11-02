@@ -27,14 +27,7 @@ protected:
 
 private:
 	// Variables
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float MaxHealth = 100.f;
-	float CurrentHealth = 0.f;
-
-	// Feature
-	UFUNCTION()
-	void DamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
-		class AController* Instigator, AActor* DamageCauser);
 	
-	class AToonTanksGameMode* GameMode = nullptr;	
+	// Feature
+	
 };

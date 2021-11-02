@@ -20,21 +20,14 @@ class TOONTANKS_API ATank : public ABasePawn
 	ATank();
 
 	//Variables
-	UPROPERTY(EditAnywhere, Category="Tank Setup", BlueprintReadWrite)
-	float TankSpeed = 800.f;
 	
-	UPROPERTY(EditAnywhere, Category="Tank Setup", BlueprintReadWrite)
-	float TankTurnSpeed = 80.f;
 
 	//Features
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	virtual void Tick(float DeltaSeconds) override;
 
-	void HandleDestruction();
-
-	APlayerController* GetPlayerController(){ return PlayerController;}
-
+	
 	protected:
 	
 	//Variables
@@ -43,19 +36,7 @@ class TOONTANKS_API ATank : public ABasePawn
 	private:
 
 	//Variables
-	UPROPERTY(VisibleAnywhere, Category = "Tank Setup")
-	class USpringArmComponent* SpringArm = nullptr;
-
-	UPROPERTY(VisibleAnywhere, Category= "Tank Setup")
-	class UCameraComponent* Camera = nullptr;
-
-	APlayerController* PlayerController = nullptr ;
-
-	FHitResult HitResult ;
-
+	
 	// Features
-	void Move(float Value);
-	
-	void Turn(float Value);
-	
+
 };

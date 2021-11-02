@@ -21,11 +21,6 @@ void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CurrentHealth = MaxHealth;
-
-	GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UHealthComponent::DamageTaken);
-
-	GameMode = Cast<AToonTanksGameMode>(UGameplayStatics::GetGameMode(this));
 	
 	
 }
@@ -39,11 +34,5 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	// ...
 }
 
-void UHealthComponent::DamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
-	AController* Instigator, AActor* DamageCauser)
-{
-	if(CurrentHealth <= 0.f) GameMode->ActorDied(DamagedActor);
 
-	CurrentHealth -= Damage;
-}
 

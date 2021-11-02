@@ -23,7 +23,7 @@ class TOONTANKS_API ATower : public ABasePawn
 	//Member feature
 	virtual void Tick(float DeltaSeconds) override;
 
-	void HandleDestruction();
+	
 	
 	protected:
 	//Member variables
@@ -34,22 +34,8 @@ class TOONTANKS_API ATower : public ABasePawn
 	
 	private:
 	//Member variables
-	class ATank* Tank = nullptr;
 
-	FVector TowerLocation;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category="Tower Setup")
-	float TowerRange = 500.f;
-	UPROPERTY(EditAnywhere, Category="Tower Setup")
-	float FireRate = 1.f;
-
-	FTimerHandle FireRateTimer;
-
-	bool bAlive = true;
 
 	//Member features
-	void CheckFireCondition();
 
-	bool InFireRange();
-	
 };

@@ -24,23 +24,7 @@ protected:
 
 private:
 	//Member variables
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* BaseMesh = nullptr;
-
-	UPROPERTY(VisibleAnywhere, Category="Projectile Setup")
-	class UProjectileMovementComponent* ProjectileMovementComponent = nullptr;
-
-	UPROPERTY(EditAnywhere, Category="Combat", BlueprintReadWrite, meta=(AllowPrivateAccess = "true"))
-	float Damage = 25.f;
-
-	UPROPERTY(EditAnywhere, Category="Combat", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float ProjectileMaxSpeed = 4000.f;
-
-	UPROPERTY(EditAnywhere, Category="Combat", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float ProjectileInitSpeed = 3000.f;
-
+	
 	//Member feature
-	UFUNCTION()
-	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent,
-		FVector NormalImpulse, const FHitResult& HitResult);
+	
 };
