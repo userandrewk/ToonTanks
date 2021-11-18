@@ -23,6 +23,10 @@ public:
 
 	virtual void BeginPlay() override;
 
+	void HandleDestruction();
+
+	APlayerController* GetPlayerController() const {return  PlayerController;}
+
 protected:
 	
 

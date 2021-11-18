@@ -85,3 +85,12 @@ void ATank::TurnTank(float Value)
 	AddActorLocalRotation(DeltaRotation, true);
 }
 
+void ATank::HandleDestruction()
+{
+	Super::HandleDestruction();
+
+	SetActorHiddenInGame(true);
+	SetActorTickEnabled(false);
+	
+}
+

@@ -60,5 +60,12 @@ void ATower::CheckFireConditions()
 	}
 }
 
+void ATower::HandleDestruction()
+{
+	Super::HandleDestruction();
+
+	Destroy();
+}
+
 
 

@@ -4,6 +4,8 @@
 #include "HealthComponent.h"
 
 #include "BasePawn.h"
+#include "Kismet/GameplayStatics.h"
+#include "ToonTanksGameMode.h"
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
@@ -26,6 +28,8 @@ void UHealthComponent::BeginPlay()
 	Health = MaxHealth;
 
 	GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UHealthComponent::DamageTaken);
+	
+	ToonTanksGameMode = Cast<AToonTanksGameMode>(UGameplayStatics::GetGameMode(this));
 }
 
 
@@ -40,6 +44,14 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 void UHealthComponent::DamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
 	AController* Instigator, AActor* DamageCauser)
 {
-	
+
+	if(Damage <= 0) return;
+
+	Health -= Damage;
+
+	if(ToonTanksGameMode && Health <= 0)
+	{
+		ToonTanksGameMode->ActorDied(DamagedActor);
+	}
 }
 
