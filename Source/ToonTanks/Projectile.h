@@ -39,6 +39,9 @@ private:
 	UPROPERTY(EditAnywhere, Category="Combat")
 	float ProjectileInitialSpeed = 7000.f; //Default
 
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		FVector NormalImpulse, const FHitResult& Hit);
 	
 	
 };

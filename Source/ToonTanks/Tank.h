@@ -24,7 +24,7 @@ public:
 	virtual void BeginPlay() override;
 
 protected:
-	int SomeInt;
+	
 
 private:
 
