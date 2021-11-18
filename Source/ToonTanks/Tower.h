@@ -39,5 +39,12 @@ private:
 	UPROPERTY(EditAnywhere, Category="Combat")
 	float TowerRange = 1100.f; // Default range for tower
 
+	UPROPERTY(EditAnywhere, Category="Combat")
+	float FireRate = 2.f; // Default fire rate is two seconds
+
+	void CheckFireConditions();
+
+	
+
 	
 };

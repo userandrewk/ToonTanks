@@ -2,8 +2,10 @@
 
 
 #include "Tower.h"
+
 #include "Tank.h"
 #include "Kismet/GameplayStatics.h"
+#include "TimerManager.h"
 
 ATower::ATower()
 {
@@ -20,7 +22,8 @@ void ATower::BeginPlay()
 
 	//Setup timer to fire
 
-	
+	GetWorldTimerManager().SetTimer(FireTimer, this, &ATower::CheckFireConditions, FireRate, true);
+
 }
 
 
@@ -45,11 +48,17 @@ const bool ATower::InRange()
 		{
 			return true;
 		}
-		
 	}
 	return false;
 }
 
+void ATower::CheckFireConditions()
+{
+	if(InRange())
+	{
+		Fire();
+	}
+}
 
 
 

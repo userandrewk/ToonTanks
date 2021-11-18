@@ -5,6 +5,7 @@
 
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
+#include "Projectile.h"
 
 // Sets default values
 ABasePawn::ABasePawn()
@@ -23,6 +24,8 @@ ABasePawn::ABasePawn()
 
 	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>("Projectile Spawn Point");
 	ProjectileSpawnPoint->SetupAttachment(TurretMeshComponent);
+
+	
 	
 }
 
@@ -60,12 +63,10 @@ void ABasePawn::RotateTurret(FVector TargetRotation)
 
 void ABasePawn::Fire()
 {
-	DrawDebugBox(
-		GetWorld(),
+	GetWorld()->SpawnActor<AProjectile>(
+		DefaultProjectileClass,
 		ProjectileSpawnPoint->GetComponentLocation(),
-		FVector(25.f, 25.f, 25.f),
-		FColor::Red,false, 1.f);
-
+		ProjectileSpawnPoint->GetComponentRotation());
 
 	
 }

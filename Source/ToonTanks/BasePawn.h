@@ -22,6 +22,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	float GetHealth() {return Health;}
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -30,6 +32,7 @@ protected:
 
 	void RotateTurret(FVector TargetRotation);
 
+	
 	UPROPERTY(EditAnywhere, Category="Combat")
 	float Health;
 
@@ -49,6 +52,10 @@ private:
 	UPROPERTY(VisibleAnywhere, Category="Pawn Core Setup")
 	USceneComponent* ProjectileSpawnPoint = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, Category="Combat")
+	TSubclassOf<class AProjectile> DefaultProjectileClass;
+
+	
 	
 	//Feature
 

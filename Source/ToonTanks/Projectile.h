@@ -27,6 +27,18 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* ProjectileMesh = nullptr;
 
+	UPROPERTY(VisibleAnywhere, Category="Movement")
+	class UProjectileMovementComponent* ProjectileMovementComponent = nullptr;
+
+	UPROPERTY(EditAnywhere, Category="Combat", BlueprintReadWrite, meta=(AllowPrivateAccess = "true"))
+	float Damage = 25.f; //Default damage is 25
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	float ProjectileMaxSpeed = 3000.f; // Default
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	float ProjectileInitialSpeed = 7000.f; //Default
+
 	
 	
 };
