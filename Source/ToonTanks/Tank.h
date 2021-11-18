@@ -25,7 +25,7 @@ public:
 
 	void HandleDestruction();
 
-	APlayerController* GetPlayerController() const {return  PlayerController;}
+	APlayerController* GetTankPlayerController() const {return  PlayerController;}
 
 protected:
 	

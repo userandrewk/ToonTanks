@@ -34,6 +34,6 @@ private:
 	void DamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
 		AController* Instigator, AActor* DamageCauser);
 
-	class AToonTanksGameMode* ToonTanksGameMode;
+	class AToonTanksGameMode* ToonTanksGameMode = nullptr;
 	
 };

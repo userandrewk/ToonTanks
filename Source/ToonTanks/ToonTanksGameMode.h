@@ -24,5 +24,7 @@ protected:
 
 private:
 
-	class ATank* Tank;
+	class ATank* Tank = nullptr;
+
+	class AToonTanksPlayerController* PlayerController = nullptr;
 };
