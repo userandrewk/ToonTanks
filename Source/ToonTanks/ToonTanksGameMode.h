@@ -22,9 +22,16 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartGame();
+
 private:
 
 	class ATank* Tank = nullptr;
 
 	class AToonTanksPlayerController* PlayerController = nullptr;
+
+	float StartDelay  = 3.5f;
+
+	void HandleGameStart();
 };

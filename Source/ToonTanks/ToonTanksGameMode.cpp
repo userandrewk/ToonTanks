@@ -13,21 +13,14 @@ void AToonTanksGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Tank = Cast<ATank>(UGameplayStatics::GetPlayerPawn(this,0));
-	if(Tank)
-	{
-		PlayerController = Cast<AToonTanksPlayerController>(Tank->GetTankPlayerController());
-		
-	}
-
-	
+	HandleGameStart();
 	
 }
 
 
-
 void AToonTanksGameMode::ActorDied(AActor* DeadActor)
 {
+	
 	if(DeadActor == Tank)
 	{
 		Tank->HandleDestruction();
@@ -41,5 +34,29 @@ void AToonTanksGameMode::ActorDied(AActor* DeadActor)
 	{
 		DestroyedTower->HandleDestruction();
 	}
+}
+
+void AToonTanksGameMode::HandleGameStart()
+{
+	Tank = Cast<ATank>(UGameplayStatics::GetPlayerPawn(this,0));
+	PlayerController = Cast<AToonTanksPlayerController>(
+			UGameplayStatics::GetPlayerController(this, 0));
+
+	StartGame();
+		
+	if(PlayerController)
+	{
+		PlayerController->SetPlayerEnabledState(false);
+
+		FTimerHandle GameStartTimer;
+
+		FTimerDelegate GameStartTimerDelegate = FTimerDelegate::CreateUObject(
+			PlayerController,
+			&AToonTanksPlayerController::SetPlayerEnabledState,
+			true);
+
+		GetWorldTimerManager().SetTimer(GameStartTimer, GameStartTimerDelegate, StartDelay, false);
+	}	
+	
 }
 

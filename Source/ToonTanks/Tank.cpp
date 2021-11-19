@@ -53,7 +53,7 @@ void ATank::Tick(float DeltaSeconds)
 			false,
 			OUT CursorHit);
 
-		DrawDebugSphere(GetWorld(), CursorHit.Location, 20.f, 20, FColor::Purple);
+		// DrawDebugSphere(GetWorld(), CursorHit.Location, 20.f, 20, FColor::Purple);
 
 		RotateTurret(CursorHit.Location);
 	}
