@@ -18,7 +18,7 @@ ATank::ATank()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("Camera");
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
-	Health = 150.f; //Default value for Tank
+	Health = 49.f; //Default value for Tank
 	
 }
 
@@ -89,6 +89,7 @@ void ATank::HandleDestruction()
 {
 	Super::HandleDestruction();
 
+	bAlive = false;
 	SetActorHiddenInGame(true);
 	SetActorTickEnabled(false);
 	

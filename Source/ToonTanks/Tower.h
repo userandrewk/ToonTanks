@@ -46,6 +46,8 @@ private:
 
 	void CheckFireConditions();
 
+	class AToonTanksGameMode* GameModeBase = nullptr;
+
 	
 
 	

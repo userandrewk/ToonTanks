@@ -3,7 +3,7 @@
 
 #include "BasePawn.h"
 
-#include "DrawDebugHelpers.h"
+
 #include "Kismet/GameplayStatics.h"
 #include "Projectile.h"
 
@@ -73,7 +73,25 @@ void ABasePawn::Fire()
 
 void ABasePawn::HandleDestruction()
 {
-//todo visual / sounds 
+	if(DeathParticleSystem)
+	{
+		if (DeathSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
+		}
+
+		if(DeathCameraShakeClass)
+		{
+			GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(DeathCameraShakeClass);
+		}
+		
+		UGameplayStatics::SpawnEmitterAtLocation(
+			this,
+			DeathParticleSystem,
+			GetActorLocation(),
+			GetActorRotation());
+	}
+	
 }
 
 

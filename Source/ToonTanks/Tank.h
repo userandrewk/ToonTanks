@@ -27,8 +27,8 @@ public:
 
 	APlayerController* GetTankPlayerController() const {return  PlayerController;}
 
-protected:
-	
+	bool GetbAlive() {return bAlive;}
+
 
 private:
 
@@ -51,4 +51,6 @@ private:
 	APlayerController* PlayerController = nullptr;
 
 	FHitResult CursorHit;
+
+	bool bAlive = true;
 };

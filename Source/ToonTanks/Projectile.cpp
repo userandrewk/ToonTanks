@@ -5,6 +5,7 @@
 
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -19,6 +20,9 @@ AProjectile::AProjectile()
 
 	ProjectileMovementComponent->InitialSpeed = ProjectileInitialSpeed;
 	ProjectileMovementComponent->MaxSpeed = ProjectileMaxSpeed;
+
+	TrailParticleComponent = CreateDefaultSubobject<UParticleSystemComponent>("Trail Particle Component");
+	TrailParticleComponent->SetupAttachment(RootComponent);
 	
 }
 
@@ -28,6 +32,11 @@ void AProjectile::BeginPlay()
 	Super::BeginPlay();
 
 	ProjectileMesh->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
+
+	if(LaunchSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, LaunchSound, GetActorLocation());
+	}
 	
 	
 }
@@ -36,17 +45,30 @@ void AProjectile::BeginPlay()
 void AProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
 
-	if(!GetOwner()) return;
+	if(!GetOwner())
+	{
+		Destroy();
+		return;
+	} 
 
 	if(OtherActor && OtherActor != this && OtherActor != GetOwner())
 	{
+		if(HitSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
+		}
+
+		if(HitCameraShakeClass)
+		{
+			GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(HitCameraShakeClass);
+		}
+		
 		UGameplayStatics::ApplyDamage(
 		OtherActor,
 		Damage,
@@ -55,8 +77,13 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 		UDamageType::StaticClass());
 	}
 
-		
+	if(HitParticle)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(this,
+		HitParticle,
+		GetActorLocation(),
+		GetActorRotation());
+	}
 	
-		
 	Destroy();
 }

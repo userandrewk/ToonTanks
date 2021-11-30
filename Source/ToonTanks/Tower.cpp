@@ -6,6 +6,7 @@
 #include "Tank.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
+#include "ToonTanksGameMode.h"
 
 ATower::ATower()
 {
@@ -15,6 +16,9 @@ ATower::ATower()
 void ATower::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GameModeBase = Cast<AToonTanksGameMode>(UGameplayStatics::GetGameMode(this));
+	GameModeBase->IncreaseTowersNum();
 
 	TowerLocation = GetOwner()->GetActorLocation();
 
@@ -54,7 +58,9 @@ const bool ATower::InRange()
 
 void ATower::CheckFireConditions()
 {
-	if(InRange())
+	if(!PlayerTank){ return;}
+	
+	if(InRange() && PlayerTank->GetbAlive())
 	{
 		Fire();
 	}

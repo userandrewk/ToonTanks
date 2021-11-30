@@ -28,11 +28,18 @@ void AToonTanksGameMode::ActorDied(AActor* DeadActor)
 		if(PlayerController)
 		{
 			PlayerController->SetPlayerEnabledState(false);
+			EndGame(false);
 		}
 	}
 	else if(auto DestroyedTower = Cast<ATower>(DeadActor))
 	{
+		TowersNum--;
 		DestroyedTower->HandleDestruction();
+
+		if (TowersNum <= 0)
+		{
+			EndGame(true);
+		}
 	}
 }
 
@@ -56,7 +63,8 @@ void AToonTanksGameMode::HandleGameStart()
 			true);
 
 		GetWorldTimerManager().SetTimer(GameStartTimer, GameStartTimerDelegate, StartDelay, false);
-	}	
+	}
+
 	
 }
 

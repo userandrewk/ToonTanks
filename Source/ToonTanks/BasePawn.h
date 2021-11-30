@@ -57,6 +57,14 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="Combat")
 	TSubclassOf<class AProjectile> DefaultProjectileClass;
 
+	UPROPERTY(EditAnywhere, Category="Animation")
+	class UParticleSystem* DeathParticleSystem = nullptr;
+
+	UPROPERTY(EditAnywhere, Category="Animation")
+	class USoundBase* DeathSound = nullptr;
+
+	UPROPERTY(EditAnywhere, Category="Animation")
+	TSubclassOf<class UCameraShakeBase> DeathCameraShakeClass;
 	
 	
 	//Feature
