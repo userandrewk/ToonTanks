@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "Components/ActorComponent.h"
 #include "HealthComponent.generated.h"
 
@@ -18,23 +17,23 @@ public:
 	UHealthComponent();
 
 	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
+    	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 private:
-	// Variables
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float MaxHealth = 100.f;
-	float CurrentHealth = 0.f;
 
-	// Feature
+	class ABasePawn* OwnerActor = nullptr;
+	
+	float MaxHealth;
+	float Health;
+
 	UFUNCTION()
 	void DamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
-		class AController* Instigator, AActor* DamageCauser);
+		AController* Instigator, AActor* DamageCauser);
+
+	class AToonTanksGameMode* ToonTanksGameMode = nullptr;
 	
-	class AToonTanksGameMode* GameMode = nullptr;	
 };

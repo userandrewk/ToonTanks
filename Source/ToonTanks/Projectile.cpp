@@ -2,9 +2,10 @@
 
 
 #include "Projectile.h"
+
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "GameFramework/DamageType.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -12,13 +13,17 @@ AProjectile::AProjectile()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base Mesh"));
-	RootComponent = BaseMesh;
+	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>("Projectile Component");
+	RootComponent = ProjectileMesh;
 
-	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement Component"));
-	ProjectileMovementComponent->InitialSpeed = ProjectileInitSpeed; // Magic number 1
-	ProjectileMovementComponent->MaxSpeed = ProjectileMaxSpeed; // Magic number 2
+	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("Projectile Movement Component");
 
+	ProjectileMovementComponent->InitialSpeed = ProjectileInitialSpeed;
+	ProjectileMovementComponent->MaxSpeed = ProjectileMaxSpeed;
+
+	TrailParticleComponent = CreateDefaultSubobject<UParticleSystemComponent>("Trail Particle Component");
+	TrailParticleComponent->SetupAttachment(RootComponent);
+	
 }
 
 // Called when the game starts or when spawned
@@ -26,7 +31,14 @@ void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	BaseMesh->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
+	ProjectileMesh->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
+
+	if(LaunchSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, LaunchSound, GetActorLocation());
+	}
+	
+	
 }
 
 // Called every frame
@@ -35,22 +47,43 @@ void AProjectile::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& HitResult)
+void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	FVector NormalImpulse, const FHitResult& Hit)
 {
-	if(!GetOwner()) return;
+
+	if(!GetOwner())
+	{
+		Destroy();
+		return;
+	} 
 
 	if(OtherActor && OtherActor != this && OtherActor != GetOwner())
 	{
-		UGameplayStatics::ApplyDamage(OtherActor,
-			Damage,
-			GetOwner()->GetInstigatorController(),
-			this,
-			UDamageType::StaticClass());
+		if(HitSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
+		}
+
+		if(HitCameraShakeClass)
+		{
+			GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(HitCameraShakeClass);
+		}
+		
+		UGameplayStatics::ApplyDamage(
+		OtherActor,
+		Damage,
+		GetOwner()->GetInstigatorController(),
+		this,
+		UDamageType::StaticClass());
 	}
 
-	Destroy();
+	if(HitParticle)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(this,
+		HitParticle,
+		GetActorLocation(),
+		GetActorRotation());
+	}
 	
+	Destroy();
 }
-
-

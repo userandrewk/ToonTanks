@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/Pawn.h"
 #include "BasePawn.generated.h"
 
@@ -14,15 +15,14 @@ class TOONTANKS_API ABasePawn : public APawn
 public:
 	// Sets default values for this pawn's properties
 	ABasePawn();
-	
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawm Setup")
-	FString PlayerNickname;
+	float GetHealth() {return Health;}
 
 	void HandleDestruction();
 
@@ -30,29 +30,49 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	void TurnTurret(FVector TargetVector);
-
 	void Fire();
 
-	UPROPERTY(VisibleAnywhere, Category="Pawn Setup")
-	class UCapsuleComponent* CapsuleComponent = nullptr;
+	void RotateTurret(FVector TargetRotation);
 
-	UPROPERTY(VisibleAnywhere, Category = "Pawn Setup")
-	UStaticMeshComponent* BaseMesh = nullptr;
-
-	UPROPERTY(VisibleAnywhere,Category="Pawn Setup")
-	UStaticMeshComponent* TurretMesh = nullptr;
-
-	UPROPERTY(VisibleAnywhere, Category="Pawn Setup", BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
-	USceneComponent* ProjectileSpawnPoint = nullptr;
 	
+	UPROPERTY(EditAnywhere, Category="Combat")
+	float Health;
+
 
 private:
-	// Member variable
+	//Variables
 	
+	UPROPERTY(VisibleAnywhere, Category="Pawn Core Setup")
+	UCapsuleComponent* CapsuleComponent = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category="Pawn Core Setup")
+	UStaticMeshComponent* BaseMeshComponent = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category="Pawn Core Setup")
+	UStaticMeshComponent* TurretMeshComponent = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category="Pawn Core Setup")
+	USceneComponent* ProjectileSpawnPoint = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category="Combat")
-	TSubclassOf<class AProjectile> ProjectileUClass;
+	TSubclassOf<class AProjectile> DefaultProjectileClass;
 
+	UPROPERTY(EditAnywhere, Category="Animation")
+	class UParticleSystem* DeathParticleSystem = nullptr;
 
+	UPROPERTY(EditAnywhere, Category="Animation")
+	class USoundBase* DeathSound = nullptr;
+
+	UPROPERTY(EditAnywhere, Category="Animation")
+	TSubclassOf<class UCameraShakeBase> DeathCameraShakeClass;
+	
+	
+	//Feature
+
+	void TurnTurret();
+	
+	void Destruction();
+
+	
+	
 };

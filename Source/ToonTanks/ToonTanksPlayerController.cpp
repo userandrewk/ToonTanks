@@ -2,7 +2,6 @@
 
 
 #include "ToonTanksPlayerController.h"
-#include "GameFramework/Pawn.h"
 
 void AToonTanksPlayerController::SetPlayerEnabledState(bool bPlayerEnabled)
 {
@@ -12,7 +11,7 @@ void AToonTanksPlayerController::SetPlayerEnabledState(bool bPlayerEnabled)
 	}
 	else
 	{
-	    GetPawn()->DisableInput(this);
+		GetPawn()->DisableInput(this);
 	}
 	bShowMouseCursor = bPlayerEnabled;
 }

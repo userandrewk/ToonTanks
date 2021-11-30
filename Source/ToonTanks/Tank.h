@@ -14,48 +14,43 @@ class TOONTANKS_API ATank : public ABasePawn
 {
 	GENERATED_BODY()
 
-
-	public:
-	
+public:
 	ATank();
 
-	//Variables
-	UPROPERTY(EditAnywhere, Category="Tank Setup", BlueprintReadWrite)
-	float TankSpeed = 800.f;
-	
-	UPROPERTY(EditAnywhere, Category="Tank Setup", BlueprintReadWrite)
-	float TankTurnSpeed = 80.f;
-
-	//Features
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	virtual void Tick(float DeltaSeconds) override;
 
+	virtual void BeginPlay() override;
+
 	void HandleDestruction();
 
-	APlayerController* GetPlayerController(){ return PlayerController;}
+	APlayerController* GetTankPlayerController() const {return  PlayerController;}
 
-	protected:
-	
-	//Variables
-	virtual void BeginPlay() override;
-	
-	private:
+	bool GetbAlive() {return bAlive;}
 
-	//Variables
-	UPROPERTY(VisibleAnywhere, Category = "Tank Setup")
-	class USpringArmComponent* SpringArm = nullptr;
 
-	UPROPERTY(VisibleAnywhere, Category= "Tank Setup")
-	class UCameraComponent* Camera = nullptr;
+private:
 
-	APlayerController* PlayerController = nullptr ;
+	UPROPERTY(VisibleAnywhere, Category="Pawn Core Setup")
+	class USpringArmComponent* SpringArmComponent = nullptr;
 
-	FHitResult HitResult ;
+	UPROPERTY(VisibleAnywhere, Category="Pawn Core Setup")
+	class UCameraComponent* CameraComponent = nullptr;
 
-	// Features
-	void Move(float Value);
-	
-	void Turn(float Value);
-	
+	UPROPERTY(EditAnywhere, Category="Combat", BlueprintReadWrite, meta=(AllowPrivateAccess = "true"))
+	float TankMoveSpeed = 500.f;
+
+	void MoveTank(float Value);
+
+	UPROPERTY(EditAnywhere, Category="Combat", BlueprintReadWrite, meta=(AllowPrivateAccess = "true"))
+	float TankTurnSpeed = 50.f;
+
+	void TurnTank(float Value);
+
+	APlayerController* PlayerController = nullptr;
+
+	FHitResult CursorHit;
+
+	bool bAlive = true;
 };

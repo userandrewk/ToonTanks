@@ -6,66 +6,49 @@
 #include "Tank.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
-#include "Components/CapsuleComponent.h"
-
+#include "ToonTanksGameMode.h"
 
 ATower::ATower()
 {
-	
+	Health = 100.f; // Default value for tower
+}
+
+void ATower::BeginPlay()
+{
+	Super::BeginPlay();
+
+	GameModeBase = Cast<AToonTanksGameMode>(UGameplayStatics::GetGameMode(this));
+	GameModeBase->IncreaseTowersNum();
+
+	TowerLocation = GetOwner()->GetActorLocation();
+
+	PlayerTank = Cast<ATank>(UGameplayStatics::GetPlayerPawn(this, 0));
+
+	//Setup timer to fire
+
+	GetWorldTimerManager().SetTimer(FireTimer, this, &ATower::CheckFireConditions, FireRate, true);
+
 }
 
 
 void ATower::Tick(float DeltaSeconds)
 {
-	Super::Tick(DeltaSeconds);	
+	Super::Tick(DeltaSeconds);
 
-	if(bAlive)
+	if(InRange())
 	{
-		if(InFireRange())
-		{
-			TurnTurret(Tank->GetActorLocation()); // turn turret to a tank direction
-		}
+		FVector TargetLocation = PlayerTank->GetActorLocation();
+		RotateTurret(TargetLocation);
 	}
 }
 
-
-void ATower::BeginPlay()
+const bool ATower::InRange()
 {
-	Super::BeginPlay();
-	
-	TowerLocation = GetOwner()->GetActorLocation();
-	
-	Tank = Cast<ATank>(UGameplayStatics::GetPlayerPawn(this, 0));
-
-	//Set auto-fire
-	if(bAlive)
+	if(PlayerTank)
 	{
-		GetWorldTimerManager().SetTimer(FireRateTimer, this, &ATower::CheckFireCondition, FireRate, true);
-	}
-	else
-	{
-		GetWorldTimerManager().ClearTimer(FireRateTimer);
-	}
-	
-}
+		float DistanceToTank = FVector::Dist(TowerLocation, PlayerTank->GetActorLocation());
 
-void ATower::CheckFireCondition()
-{
-	if(!bAlive)return;
-	
-	if(InFireRange())
-	{
-		Fire();
-	}
-}
-
-bool ATower::InFireRange()
-{
-	if(Tank)
-	{
-		float Distance = FVector::Dist(TowerLocation, Tank->GetActorLocation());
-
-		if(Distance <= TowerRange)
+		if(DistanceToTank <= TowerRange)
 		{
 			return true;
 		}
@@ -73,12 +56,22 @@ bool ATower::InFireRange()
 	return false;
 }
 
+void ATower::CheckFireConditions()
+{
+	if(!PlayerTank){ return;}
+	
+	if(InRange() && PlayerTank->GetbAlive())
+	{
+		Fire();
+	}
+}
+
 void ATower::HandleDestruction()
 {
 	Super::HandleDestruction();
 
-	bAlive = false;
-	GetOwner()->Destroy();
-	
+	Destroy();
 }
+
+
 

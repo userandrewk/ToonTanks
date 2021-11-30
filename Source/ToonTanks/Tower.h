@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BasePawn.h"
+
 #include "Tower.generated.h"
 
 /**
@@ -14,42 +15,40 @@ class TOONTANKS_API ATower : public ABasePawn
 {
 	GENERATED_BODY()
 
-	public:
 	ATower();
 
-	//Member variables 
-	
+public:
 
-	//Member feature
+	virtual void BeginPlay() override;
+
 	virtual void Tick(float DeltaSeconds) override;
 
 	void HandleDestruction();
 	
-	protected:
-	//Member variables
 
-	//Member features
-	virtual void BeginPlay() override; //when game start
+protected:
+
+private:
+
+	class ATank* PlayerTank = nullptr;
+
+	FVector  TowerLocation;
+
+	FTimerHandle FireTimer;
+
+	const bool InRange();
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	float TowerRange = 1100.f; // Default range for tower
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	float FireRate = 2.f; // Default fire rate is two seconds
+
+	void CheckFireConditions();
+
+	class AToonTanksGameMode* GameModeBase = nullptr;
 
 	
-	private:
-	//Member variables
-	class ATank* Tank = nullptr;
 
-	FVector TowerLocation;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category="Tower Setup")
-	float TowerRange = 500.f;
-	UPROPERTY(EditAnywhere, Category="Tower Setup")
-	float FireRate = 1.f;
-
-	FTimerHandle FireRateTimer;
-
-	bool bAlive = true;
-
-	//Member features
-	void CheckFireCondition();
-
-	bool InFireRange();
 	
 };

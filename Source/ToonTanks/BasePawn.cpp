@@ -3,10 +3,9 @@
 
 #include "BasePawn.h"
 
-#include "DrawDebugHelpers.h"
-#include "Components/CapsuleComponent.h"
-#include "Projectile.h"	
 
+#include "Kismet/GameplayStatics.h"
+#include "Projectile.h"
 
 // Sets default values
 ABasePawn::ABasePawn()
@@ -14,19 +13,19 @@ ABasePawn::ABasePawn()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule Collider"));
+	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>("Capsule Component");
 	RootComponent = CapsuleComponent;
 
-	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base Mesh"));
-	BaseMesh->SetupAttachment(RootComponent);
-	
-	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret Mesh"));
-	TurretMesh->SetupAttachment(BaseMesh);
+	BaseMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Base Mesh");
+	BaseMeshComponent->SetupAttachment(RootComponent);
+
+	TurretMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Turret Mesh");
+	TurretMeshComponent->SetupAttachment(BaseMeshComponent);
 
 	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>("Projectile Spawn Point");
-	ProjectileSpawnPoint->SetupAttachment(TurretMesh);
+	ProjectileSpawnPoint->SetupAttachment(TurretMeshComponent);
 
-	PlayerNickname = TEXT("default");
+	
 	
 }
 
@@ -34,7 +33,6 @@ ABasePawn::ABasePawn()
 void ABasePawn::BeginPlay()
 {
 	Super::BeginPlay();
-
 	
 }
 
@@ -42,7 +40,7 @@ void ABasePawn::BeginPlay()
 void ABasePawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 }
 
 // Called to bind functionality to input
@@ -52,37 +50,48 @@ void ABasePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-void ABasePawn::TurnTurret(FVector TargetVector)
+void ABasePawn::RotateTurret(FVector TargetRotation)
 {
-	FVector TargetRotation = TargetVector - TurretMesh->GetComponentLocation();
-	FRotator TargetRotator(0.f, TargetRotation.Rotation().Yaw, 0.f);
+	TargetRotation = TargetRotation - TurretMeshComponent->GetComponentLocation();
 	
-	TurretMesh->SetWorldRotation(TargetRotator);
+	FRotator TargetRotator = FRotator::ZeroRotator;
+	TargetRotator.Yaw = TargetRotation.Rotation().Yaw;
+
+	TurretMeshComponent->SetWorldRotation(TargetRotator);
+	
 }
 
 void ABasePawn::Fire()
 {
-	DrawDebugSphere(GetWorld(),
-		ProjectileSpawnPoint->GetComponentLocation(),
-		40.f,
-		6,
-		FColor::Red,
-		false,
-		2.f);
-
-	//Spawn Projectile
-	auto Projectile = GetWorld()->SpawnActor<AProjectile>(
-		ProjectileUClass,
+	AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(
+		DefaultProjectileClass,
 		ProjectileSpawnPoint->GetComponentLocation(),
 		ProjectileSpawnPoint->GetComponentRotation());
-
+	
 	Projectile->SetOwner(this);
 }
 
-
 void ABasePawn::HandleDestruction()
 {
-	// Visual / sound
+	if(DeathParticleSystem)
+	{
+		if (DeathSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
+		}
+
+		if(DeathCameraShakeClass)
+		{
+			GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(DeathCameraShakeClass);
+		}
+		
+		UGameplayStatics::SpawnEmitterAtLocation(
+			this,
+			DeathParticleSystem,
+			GetActorLocation(),
+			GetActorRotation());
+	}
+	
 }
 
 

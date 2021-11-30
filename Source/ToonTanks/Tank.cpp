@@ -2,28 +2,44 @@
 
 
 #include "Tank.h"
+
+#include "DrawDebugHelpers.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "DrawDebugHelpers.h"
 
 #define OUT
 
 ATank::ATank()
 {
-	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
-	SpringArm->SetupAttachment(RootComponent);
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("Spring Arm");
+	SpringArmComponent->SetupAttachment(RootComponent);
 
-	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	Camera->SetupAttachment(SpringArm);
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>("Camera");
+	CameraComponent->SetupAttachment(SpringArmComponent);
+
+	Health = 49.f; //Default value for Tank
+	
+}
+
+void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	
+	InputComponent->BindAxis("MoveForward", this, &ATank::MoveTank);
+	InputComponent->BindAxis("Turn", this, &ATank::TurnTank);
+	InputComponent->BindAction("Fire", IE_Pressed, this, &ATank::Fire);
 	
 }
 
 void ATank::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	// PlayerController = UGameplayStatics::GetPlayerController(this, 0); // 0 - player index 
 	PlayerController = Cast<APlayerController>(GetController());
+	
+	
 }
 
 void ATank::Tick(float DeltaSeconds)
@@ -32,55 +48,50 @@ void ATank::Tick(float DeltaSeconds)
 
 	if(PlayerController)
 	{
-		PlayerController->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, OUT HitResult);	
+		PlayerController->GetHitResultUnderCursor(
+			ECollisionChannel::ECC_Visibility,
+			false,
+			OUT CursorHit);
 
-		DrawDebugSphere(GetWorld(),
-			HitResult.Location,
-			15.f,
-			20,
-			FColor::Red);
+		// DrawDebugSphere(GetWorld(), CursorHit.Location, 20.f, 20, FColor::Purple);
 
-		TurnTurret(HitResult.Location);
+		RotateTurret(CursorHit.Location);
 	}
 	
-}
-
-void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	InputComponent->BindAxis(TEXT("MoveForward"), this, &ATank::Move);
-	InputComponent->BindAxis(TEXT("Turn"), this, &ATank::Turn);
-	InputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &ATank::Fire);
 	
 }
 
-void ATank::Move(float Value)
+
+void ATank::MoveTank(float Value)
 {
-	FVector Offset;
+
+	FVector DeltaLocation = FVector::ZeroVector;
+	
+	float DeltaTime = UGameplayStatics::GetWorldDeltaSeconds(this);
+
+	DeltaLocation.X = Value * DeltaTime * TankMoveSpeed;
+	
+	AddActorLocalOffset(DeltaLocation, true);
+}
+
+void ATank::TurnTank(float Value)
+{
+	FRotator DeltaRotation = FRotator::ZeroRotator;
 
 	float DeltaTime = UGameplayStatics::GetWorldDeltaSeconds(this);
-	
-	Offset.X = Value * TankSpeed * DeltaTime ;
-	
-	AddActorLocalOffset(Offset, true);
-}
 
-void ATank::Turn(float Value)
-{
-	FRotator Rotate;
+	DeltaRotation.Yaw = Value * DeltaTime * TankTurnSpeed;
 
-	Rotate.Yaw = Value * TankTurnSpeed * UGameplayStatics::GetWorldDeltaSeconds(this);
-	
-	AddActorLocalRotation(Rotate, true);
-	
+	AddActorLocalRotation(DeltaRotation, true);
 }
 
 void ATank::HandleDestruction()
 {
 	Super::HandleDestruction();
 
+	bAlive = false;
 	SetActorHiddenInGame(true);
 	SetActorTickEnabled(false);
+	
 }
 

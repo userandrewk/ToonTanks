@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <stdbool.h>
+
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "ToonTanksGameMode.generated.h"
@@ -14,23 +16,34 @@ class TOONTANKS_API AToonTanksGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
-	public:
 
+public:
 	void ActorDied(AActor* DeadActor);
 
-	protected:
+	void IncreaseTowersNum(){TowersNum++;}
+	int32 GetTowersNum() const {return TowersNum;}
+
+protected:
 
 	virtual void BeginPlay() override;
 
-	private:
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartGame();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void EndGame(bool bGameWon);
+
+private:
 
 	class ATank* Tank = nullptr;
+
 	class AToonTanksPlayerController* PlayerController = nullptr;
 
-	UPROPERTY(EditAnywhere, Category="Game Setup")
-	float GameStartDelay = 3.f;
+	float StartDelay  = 3.5f;
 
 	void HandleGameStart();
 	
-	
+	UPROPERTY(EditAnywhere)
+	int32 TowersNum = 0;
+
 };

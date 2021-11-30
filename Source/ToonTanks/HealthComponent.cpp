@@ -2,6 +2,8 @@
 
 
 #include "HealthComponent.h"
+
+#include "BasePawn.h"
 #include "Kismet/GameplayStatics.h"
 #include "ToonTanksGameMode.h"
 
@@ -10,9 +12,10 @@ UHealthComponent::UHealthComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
+	OwnerActor = Cast<ABasePawn>(GetOwner());
+	
 }
 
 
@@ -21,13 +24,12 @@ void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CurrentHealth = MaxHealth;
+	MaxHealth = OwnerActor->GetHealth();
+	Health = MaxHealth;
 
 	GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UHealthComponent::DamageTaken);
-
-	GameMode = Cast<AToonTanksGameMode>(UGameplayStatics::GetGameMode(this));
 	
-	
+	ToonTanksGameMode = Cast<AToonTanksGameMode>(UGameplayStatics::GetGameMode(this));
 }
 
 
@@ -42,8 +44,14 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 void UHealthComponent::DamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
 	AController* Instigator, AActor* DamageCauser)
 {
-	if(CurrentHealth <= 0.f) GameMode->ActorDied(DamagedActor);
 
-	CurrentHealth -= Damage;
+	if(Damage <= 0) return;
+
+	Health -= Damage;
+
+	if(ToonTanksGameMode && Health <= 0)
+	{
+		ToonTanksGameMode->ActorDied(DamagedActor);
+	}
 }
 
