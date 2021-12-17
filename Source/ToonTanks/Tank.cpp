@@ -4,6 +4,7 @@
 #include "Tank.h"
 
 #include "DrawDebugHelpers.h"
+#include "ToonTanksGameMode.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -94,4 +95,5 @@ void ATank::HandleDestruction()
 	SetActorTickEnabled(false);
 	
 }
+
 

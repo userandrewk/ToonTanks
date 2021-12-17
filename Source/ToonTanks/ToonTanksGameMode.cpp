@@ -31,15 +31,16 @@ void AToonTanksGameMode::ActorDied(AActor* DeadActor)
 			EndGame(false);
 		}
 	}
-	else if(auto DestroyedTower = Cast<ATower>(DeadActor))
+	else if(ATower* DestroyedTower = Cast<ATower>(DeadActor))
 	{
-		TowersNum--;
+		GameScore++;
 		DestroyedTower->HandleDestruction();
-
-		if (TowersNum <= 0)
+		if(TowersNum <= 0)
 		{
 			EndGame(true);
 		}
+		
+		
 	}
 }
 
@@ -64,7 +65,5 @@ void AToonTanksGameMode::HandleGameStart()
 
 		GetWorldTimerManager().SetTimer(GameStartTimer, GameStartTimerDelegate, StartDelay, false);
 	}
-
-	
 }
 

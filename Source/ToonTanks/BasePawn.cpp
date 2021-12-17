@@ -33,8 +33,13 @@ ABasePawn::ABasePawn()
 void ABasePawn::BeginPlay()
 {
 	Super::BeginPlay();
+
+	
 	
 }
+
+
+
 
 // Called every frame
 void ABasePawn::Tick(float DeltaTime)
@@ -67,6 +72,10 @@ void ABasePawn::Fire()
 		DefaultProjectileClass,
 		ProjectileSpawnPoint->GetComponentLocation(),
 		ProjectileSpawnPoint->GetComponentRotation());
+	
+	if(ProjectileLaunchSound){
+		UGameplayStatics::PlaySoundAtLocation(this, ProjectileLaunchSound, ProjectileSpawnPoint->GetComponentLocation());
+	}
 	
 	Projectile->SetOwner(this);
 }

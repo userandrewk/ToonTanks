@@ -23,6 +23,8 @@ public:
 	void IncreaseTowersNum(){TowersNum++;}
 	int32 GetTowersNum() const {return TowersNum;}
 
+	int32 GetGameScore(){return GameScore;}
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -45,5 +47,8 @@ private:
 	
 	UPROPERTY(EditAnywhere)
 	int32 TowersNum = 0;
+
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	int32 GameScore = 0;
 
 };

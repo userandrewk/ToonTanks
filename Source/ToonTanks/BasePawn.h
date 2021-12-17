@@ -61,11 +61,15 @@ private:
 	class UParticleSystem* DeathParticleSystem = nullptr;
 
 	UPROPERTY(EditAnywhere, Category="Animation")
+	USoundBase* ProjectileLaunchSound = nullptr;
+	
+	UPROPERTY(EditAnywhere, Category="Animation")
 	class USoundBase* DeathSound = nullptr;
 
 	UPROPERTY(EditAnywhere, Category="Animation")
 	TSubclassOf<class UCameraShakeBase> DeathCameraShakeClass;
 	
+
 	
 	//Feature
 

@@ -51,8 +51,6 @@ private:
 	UPROPERTY(EditAnywhere, Category="Animation")
 	class UParticleSystem* HitParticle = nullptr;
 
-	UPROPERTY(EditAnywhere, Category="Animation")
-	USoundBase* LaunchSound = nullptr;
 
 	UPROPERTY(EditAnywhere, Category="Animation")
 	USoundBase* HitSound = nullptr;

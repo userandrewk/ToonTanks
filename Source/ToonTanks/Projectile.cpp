@@ -33,10 +33,6 @@ void AProjectile::BeginPlay()
 
 	ProjectileMesh->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
 
-	if(LaunchSound)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, LaunchSound, GetActorLocation());
-	}
 	
 	
 }
